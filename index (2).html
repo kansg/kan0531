@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メディアアート展示 2025年6月 | 日本開催イベント一覧</title>
+    <meta name="description" content="2025年6月に日本で開催されるメディアアート展示・イベントの完全ガイド。最新のデジタルアート、インタラクティブアート、AI アートなど。">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        select, input {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            background: white;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-box {
+            min-width: 250px;
+        }
+
+        /* Event Grid */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .event-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .event-image {
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="circuit" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10 0v20M0 10h20" stroke="white" stroke-width="0.5" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23circuit)"/></svg>');
+        }
+
+        .event-category {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .event-content {
+            padding: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .event-venue {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-date {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-description {
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .event-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-tag {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .event-price {
+            font-weight: 700;
+            color: #059669;
+            font-size: 1.1rem;
+        }
+
+        .event-link {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+
+        .event-link:hover {
+            transform: scale(1.05);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .no-results h3 {
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(30, 41, 59, 0.9);
+            color: white;
+            padding: 2rem 0;
+            border-radius: 20px 20px 0 0;
+            backdrop-filter: blur(10px);
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .search-box {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .event-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .event-link {
+                text-align: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Map Modal Styles */
+        .map-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .map-modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .map-modal-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close-map {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .close-map:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .map-container {
+            height: calc(100% - 80px);
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+
+        .map-info p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .map-button {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-left: 0.5rem;
+        }
+
+        .map-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Custom Map Marker Styles */
+        .custom-marker {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive Map Styles */
+        @media (max-width: 768px) {
+            .map-modal-content {
+                width: 95%;
+                height: 85vh;
+                margin: 2.5% auto;
+            }
+            
+            .map-info {
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                padding: 0.75rem;
+            }
+            
+            .map-button {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                display: block;
+                width: 100%;
+            }
+        }
+
+        /* Cafe Section Styles */
+        .cafe-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .cafe-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cafe-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .cafe-item {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .cafe-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .cafe-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .cafe-walk-time {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .cafe-description {
+            color: #475569;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .cafe-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .cafe-hours {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .cafe-map-button {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cafe-map-button:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .cafe-meta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .cafe-map-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>メディアアート展示 2025</h1>
+                <p class="subtitle">2025年6月 日本開催イベント完全ガイド</p>
+                
+                <div class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <h3 id="total-events">24</h3>
+                            <p>開催イベント数</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>8</h3>
+                            <p>開催都市</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>150+</h3>
+                            <p>参加アーティスト</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>30</h3>
+                            <p>開催日数</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="filter-section">
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="city-filter">開催都市</label>
+                    <select id="city-filter">
+                        <option value="">すべての都市</option>
+                        <option value="東京">東京</option>
+                        <option value="大阪">大阪</option>
+                        <option value="京都">京都</option>
+                        <option value="名古屋">名古屋</option>
+                        <option value="横浜">横浜</option>
+                        <option value="福岡">福岡</option>
+                        <option value="札幌">札幌</option>
+                        <option value="仙台">仙台</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="category-filter">カテゴリー</label>
+                    <select id="category-filter">
+                        <option value="">すべてのカテゴリー</option>
+                        <option value="デジタルアート">デジタルアート</option>
+                        <option value="インタラクティブ">インタラクティブ</option>
+                        <option value="AI アート">AI アート</option>
+                        <option value="VR/AR">VR/AR</option>
+                        <option value="プロジェクション">プロジェクション</option>
+                        <option value="サウンドアート">サウンドアート</option>
+                        <option value="バイオアート">バイオアート</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="price-filter">料金</label>
+                    <select id="price-filter">
+                        <option value="">すべての料金</option>
+                        <option value="無料">無料</option>
+                        <option value="有料">有料</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="search">検索</label>
+                    <input type="text" id="search" class="search-box" placeholder="イベント名、アーティスト名で検索...">
+                </div>
+            </div>
+        </div>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>イベントを読み込み中...</p>
+        </div>
+
+        <div class="events-grid" id="events-grid">
+            <!-- Events will be populated by JavaScript -->
+        </div>
+
+        <div class="no-results" id="no-results" style="display: none;">
+            <h3>該当するイベントが見つかりませんでした</h3>
+            <p>検索条件を変更してお試しください</p>
+        </div>
+    </div>
+
+    <!-- Map Modal -->
+    <div id="mapModal" class="map-modal">
+        <div class="map-modal-content">
+            <div class="map-modal-header">
+                <h3 class="map-modal-title" id="mapModalTitle">会場マップ</h3>
+                <button class="close-map" onclick="closeMap()">&times;</button>
+            </div>
+            <div class="map-container">
+                <div id="map"></div>
+                <div class="map-info" id="mapInfo">
+                    <h4 id="venueTitle">会場名</h4>
+                    <p id="venueAddress">住所</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 メディアアート展示ガイド. All rights reserved.</p>
+                <p>最新情報は各イベントの公式サイトでご確認ください</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Event data
+        const events = [
+            {
+                title: "Digital Dreams Tokyo 2025",
+                venue: "東京国際フォーラム",
+                city: "東京",
+                date: "2025年6月1日〜15日",
+                category: "デジタルアート",
+                price: "¥2,500",
+                priceType: "有料",
+                description: "世界最先端のデジタルアート作品が一堂に会する大規模展示。AI生成アート、インタラクティブインスタレーション、没入型体験など、未来のアートを体感できます。",
+                features: ["AI アート", "インタラクティブ", "没入体験"],
+                link: "#",
+                lat: 35.6762,
+                lng: 139.7633,
+                address: "〒100-0005 東京都千代田区丸の内3-5-1",
+                cafes: [
+                    {
+                        name: "スターバックス 丸の内ビルディング店",
+                        walkTime: "3分",
+                        description: "落ち着いた雰囲気で展示の余韻を楽しめる。WiFi完備で作品について調べることも可能。",
+                        hours: "7:00-23:00",
+                        lat: 35.6795,
+                        lng: 139.7640
+                    },
+                    {
+                        name: "カフェ・ド・クリエ 東京国際フォーラム店",
+                        walkTime: "1分",
+                        description: "会場内にある便利なカフェ。展示の合間の休憩に最適。軽食メニューも充実。",
+                        hours: "7:30-21:00",
+                        lat: 35.6760,
+                        lng: 139.7635
+                    }
+                ]
+            },
+            {
+                title: "Interactive Art Festival Osaka",
+                venue: "大阪市立美術館",
+                city: "大阪",
+                date: "2025年6月3日〜20日",
+                category: "インタラクティブ",
+                price: "¥1,800",
+                priceType: "有料",
+                description: "観客参加型のインタラクティブアート作品を中心とした革新的な展示。センサー技術、モーションキャプチャー、リアルタイム映像処理を駆使した作品群。",
+                features: ["参加型", "センサー技術", "リアルタイム"],
+                link: "#",
+                lat: 34.6623,
+                lng: 135.5147,
+                address: "〒543-0063 大阪府大阪市天王寺区茶臼山町1-82"
+            },
+            {
+                title: "AI Art Revolution",
+                venue: "森美術館",
+                city: "東京",
+                date: "2025年6月5日〜30日",
+                category: "AI アート",
+                price: "¥2,000",
+                priceType: "有料",
+                description: "人工知能が創造するアートの可能性を探る画期的な展示。機械学習、ディープラーニング、生成AIを活用した作品で、創造性の新たな地平を開きます。",
+                features: ["機械学習", "生成AI", "創造性"],
+                link: "#",
+                lat: 35.6604,
+                lng: 139.7291,
+                address: "〒106-6153 東京都港区六本木6-10-1 六本木ヒルズ森タワー53階",
+                cafes: [
+                    {
+                        name: "ブルーシール 六本木ヒルズ店",
+                        walkTime: "2分",
+                        description: "沖縄発のアイスクリーム店。アート鑑賞後の甘いひとときに。テラス席からの眺めも素晴らしい。",
+                        hours: "11:00-23:00",
+                        lat: 35.6606,
+                        lng: 139.7295
+                    },
+                    {
+                        name: "スターバックス 六本木ヒルズ メトロハット/ハリウッドプラザ店",
+                        walkTime: "4分",
+                        description: "六本木ヒルズ内の落ち着いたカフェ。アート談義に花を咲かせるのに最適な空間。",
+                        hours: "7:00-23:00",
+                        lat: 35.6598,
+                        lng: 139.7285
+                    }
+                ]
+            },
+            {
+                title: "Virtual Reality Art Space",
+                venue: "京都国立近代美術館",
+                city: "京都",
+                date: "2025年6月7日〜25日",
+                category: "VR/AR",
+                price: "¥2,200",
+                priceType: "有料",
+                description: "仮想現実と拡張現実技術を駆使したアート体験。伝統的な京都の美と最新テクノロジーが融合した、ここでしか味わえない特別な展示。",
+                features: ["VR体験", "AR技術", "伝統×革新"],
+                link: "#",
+                lat: 35.0122,
+                lng: 135.7703,
+                address: "〒606-8344 京都府京都市左京区岡崎円勝寺町"
+            },
+            {
+                title: "Sound Art Laboratory",
+                venue: "名古屋市美術館",
+                city: "名古屋",
+                date: "2025年6月10日〜28日",
+                category: "サウンドアート",
+                price: "¥1,500",
+                priceType: "有料",
+                description: "音響技術とアートが融合したサウンドアート作品の展示。空間音響、バイノーラル録音、アルゴリズム作曲など、聴覚を通じた新しいアート体験。",
+                features: ["空間音響", "アルゴリズム", "聴覚体験"],
+                link: "#",
+                lat: 35.1667,
+                lng: 136.9000,
+                address: "〒460-0008 愛知県名古屋市中区栄2-17-25"
+            },
+            {
+                title: "Projection Mapping Spectacular",
+                venue: "横浜赤レンガ倉庫",
+                city: "横浜",
+                date: "2025年6月12日〜26日",
+                category: "プロジェクション",
+                price: "無料",
+                priceType: "無料",
+                description: "歴史ある赤レンガ倉庫を舞台にした大規模プロジェクションマッピング。建物の構造を活かした立体的な映像表現で、幻想的な世界を創出します。",
+                features: ["大規模投影", "建築連動", "夜間開催"],
+                link: "#",
+                lat: 35.4528,
+                lng: 139.6411,
+                address: "〒231-0001 神奈川県横浜市中区新港1-1"
+            },
+            {
+                title: "Bio Art Exhibition",
+                venue: "福岡市美術館",
+                city: "福岡",
+                date: "2025年6月14日〜29日",
+                category: "バイオアート",
+                price: "¥1,700",
+                priceType: "有料",
+                description: "生命科学とアートの境界を探るバイオアート展。遺伝子工学、細胞培養、バイオテクノロジーを用いた作品で、生命の神秘と美しさを表現。",
+                features: ["生命科学", "バイオテック", "倫理的探求"],
+                link: "#",
+                lat: 33.5878,
+                lng: 130.3942,
+                address: "〒810-0051 福岡県福岡市中央区大濠公園1-6"
+            },
+            {
+                title: "Digital Sculpture Garden",
+                venue: "札幌芸術の森美術館",
+                city: "札幌",
+                date: "2025年6月16日〜30日",
+                category: "デジタルアート",
+                price: "¥1,900",
+                priceType: "有料",
+                description: "デジタル技術で創造された彫刻作品の展示。3Dプリンティング、パラメトリックデザイン、アルゴリズミック造形による新しい彫刻の可能性。",
+                features: ["3Dプリント", "パラメトリック", "造形革新"],
+                link: "#",
+                lat: 43.0641,
+                lng: 141.3344,
+                address: "〒005-0864 北海道札幌市南区芸術の森2丁目75"
+            },
+            {
+                title: "Interactive Light Installation",
+                venue: "仙台メディアテーク",
+                city: "仙台",
+                date: "2025年6月18日〜30日",
+                category: "インタラクティブ",
+                price: "無料",
+                priceType: "無料",
+                description: "光とインタラクションが織りなす幻想的な空間。観客の動きに反応して変化する光のインスタレーションで、参加者全員がアート作品の一部となります。",
+                features: ["光の演出", "動作感知", "参加型"],
+                link: "#",
+                lat: 38.2682,
+                lng: 140.8700,
+                address: "〒980-0821 宮城県仙台市青葉区春日町2-1"
+            },
+            {
+                title: "Generative Art Showcase",
+                venue: "東京都現代美術館",
+                city: "東京",
+                date: "2025年6月20日〜30日",
+                category: "AI アート",
+                price: "¥2,300",
+                priceType: "有料",
+                description: "アルゴリズムとコードによって生成されるジェネラティブアート作品の展示。数学的美しさとランダム性が生み出す予測不可能な芸術表現。",
+                features: ["アルゴリズム", "コード芸術", "数学的美"],
+                link: "#",
+                lat: 35.6604,
+                lng: 139.8011,
+                address: "〒135-0022 東京都江東区三好4-1-1",
+                cafes: [
+                    {
+                        name: "カフェ・ハル",
+                        walkTime: "3分",
+                        description: "地元に愛される隠れ家的カフェ。手作りケーキと丁寧に淹れたコーヒーが自慢。アートな雰囲気。",
+                        hours: "9:00-18:00",
+                        lat: 35.6610,
+                        lng: 139.8020
+                    },
+                    {
+                        name: "木場公園カフェ",
+                        walkTime: "5分",
+                        description: "公園に隣接した開放的なカフェ。自然を感じながらアート体験を振り返ることができる。",
+                        hours: "8:00-20:00",
+                        lat: 35.6590,
+                        lng: 139.8030
+                    }
+                ]
+            },
+            {
+                title: "Holographic Art Experience",
+                venue: "大阪科学技術館",
+                city: "大阪",
+                date: "2025年6月22日〜30日",
+                category: "VR/AR",
+                price: "¥2,800",
+                priceType: "有料",
+                description: "ホログラフィック技術を用いた立体映像アート。空中に浮かぶ3D映像と観客のインタラクションで、SF映画のような未来的体験を提供。",
+                features: ["ホログラム", "立体映像", "未来体験"],
+                link: "#",
+                lat: 34.6914,
+                lng: 135.5194,
+                address: "〒530-0005 大阪府大阪市北区中之島4-2-1"
+            },
+            {
+                title: "Cybernetic Art Lab",
+                venue: "京都市立芸術大学ギャラリー",
+                city: "京都",
+                date: "2025年6月24日〜30日",
+                category: "インタラクティブ",
+                price: "¥1,200",
+                priceType: "有料",
+                description: "サイバネティクス理論に基づくアート作品の実験的展示。人間と機械の相互作用、フィードバックループ、自己組織化システムを探求。",
+                features: ["サイバネティクス", "人機協調", "自己組織化"],
+                link: "#",
+                lat: 34.9983,
+                lng: 135.7594,
+                address: "〒605-0052 京都府京都市東山区今熊野北日吉町13"
+            },
+            {
+                title: "Quantum Art Installation",
+                venue: "名古屋市科学館",
+                city: "名古屋",
+                date: "2025年6月26日〜30日",
+                category: "デジタルアート",
+                price: "¥2,100",
+                priceType: "有料",
+                description: "量子物理学の概念をアートで表現した革新的な展示。量子もつれ、重ね合わせ、不確定性原理などの抽象的概念を視覚化。",
+                features: ["量子物理学", "科学可視化", "抽象表現"],
+                link: "#",
+                lat: 35.1667,
+                lng: 136.9000,
+                address: "〒460-0008 愛知県名古屋市中区栄2-17-1"
+            },
+            {
+                title: "Neural Network Art",
+                venue: "横浜美術館",
+                city: "横浜",
+                date: "2025年6月28日〜30日",
+                category: "AI アート",
+                price: "¥1,800",
+                priceType: "有料",
+                description: "ニューラルネットワークが学習・生成するアート作品の展示。深層学習、畳み込みニューラルネット、GANsなどの技術を芸術表現に応用。",
+                features: ["深層学習", "GAN", "学習生成"],
+                link: "#",
+                lat: 35.4500,
+                lng: 139.6300,
+                address: "〒220-0012 神奈川県横浜市西区みなとみらい3-4-1"
+            },
+            {
+                title: "Augmented Reality Park",
+                venue: "福岡PayPayドーム周辺",
+                city: "福岡",
+                date: "2025年6月1日〜30日",
+                category: "VR/AR",
+                price: "無料",
+                priceType: "無料",
+                description: "屋外空間を舞台にしたAR（拡張現実）アート体験。スマートフォンやARグラスを通じて、現実世界にデジタルアート作品が出現。",
+                features: ["屋外AR", "位置情報", "モバイル体験"],
+                link: "#",
+                lat: 33.5964,
+                lng: 130.3614,
+                address: "〒810-8660 福岡県福岡市中央区地行浜2-2-2"
+            },
+            {
+                title: "Robotic Art Performance",
+                venue: "札幌コンベンションセンター",
+                city: "札幌",
+                date: "2025年6月5日〜20日",
+                category: "インタラクティブ",
+                price: "¥2,400",
+                priceType: "有料",
+                description: "ロボット技術とアートが融合したパフォーマンス展示。自律型ロボット、協働ロボット、群ロボットによる創造的表現活動。",
+                features: ["ロボット技術", "自律行動", "群知能"],
+                link: "#",
+                lat: 43.0700,
+                lng: 141.3900,
+                address: "〒003-0006 北海道札幌市白石区東札幌6条1丁目1-1"
+            },
+            {
+                title: "Blockchain Art Gallery",
+                venue: "仙台国際センター",
+                city: "仙台",
+                date: "2025年6月8日〜25日",
+                category: "デジタルアート",
+                price: "¥1,600",
+                priceType: "有料",
+                description: "ブロックチェーン技術を活用したデジタルアート作品とNFTアートの展示。分散型技術がアート市場と創作活動に与える影響を探る。",
+                features: ["ブロックチェーン", "NFT", "分散技術"],
+                link: "#",
+                lat: 38.2500,
+                lng: 140.8800,
+                address: "〒980-0856 宮城県仙台市青葉区青葉山"
+            },
+            {
+                title: "Biometric Art Interface",
+                venue: "東京ビッグサイト",
+                city: "東京",
+                date: "2025年6月11日〜22日",
+                category: "インタラクティブ",
+                price: "¥2,600",
+                priceType: "有料",
+                description: "生体情報を利用したインタラクティブアート。心拍数、脳波、表情認識などのバイオメトリクス技術で、観客の感情や状態に反応する作品。",
+                features: ["生体認証", "感情認識", "リアルタイム"],
+                link: "#",
+                lat: 35.6300,
+                lng: 139.7900,
+                address: "〒135-0063 東京都江東区有明3-11-1",
+                cafes: [
+                    {
+                        name: "プロント 東京ビッグサイト店",
+                        walkTime: "2分",
+                        description: "会場内の便利なカフェ&バー。昼はカフェ、夜はバーとして営業。展示の感想を語り合うのに最適。",
+                        hours: "7:00-22:00",
+                        lat: 35.6298,
+                        lng: 139.7905
+                    },
+                    {
+                        name: "タリーズコーヒー アクアシティお台場店",
+                        walkTime: "4分",
+                        description: "お台場の景色を楽しめるカフェ。レインボーブリッジを眺めながらアート体験を振り返れる。",
+                        hours: "10:00-21:00",
+                        lat: 35.6255,
+                        lng: 139.7755
+                    }
+                ]
+            },
+            {
+                title: "Sustainable Tech Art",
+                venue: "大阪環境科学センター",
+                city: "大阪",
+                date: "2025年6月13日〜27日",
+                category: "バイオアート",
+                price: "¥1,400",
+                priceType: "有料",
+                description: "持続可能な技術とアートの融合。再生可能エネルギー、バイオマテリアル、循環型システムを用いた環境配慮型アート作品。",
+                features: ["持続可能性", "再生エネルギー", "循環型"],
+                link: "#",
+                lat: 34.6900,
+                lng: 135.5200,
+                address: "〒530-0026 大阪府大阪市北区扇町2-4-1"
+            },
+            {
+                title: "Immersive Sound Forest",
+                venue: "京都府立植物園",
+                city: "京都",
+                date: "2025年6月15日〜29日",
+                category: "サウンドアート",
+                price: "無料",
+                priceType: "無料",
+                description: "自然環境と音響技術が融合したサウンドアート体験。植物園の自然音とデジタル音響が織りなす没入型音響空間。",
+                features: ["自然音響", "環境音楽", "没入体験"],
+                link: "#",
+                lat: 35.0400,
+                lng: 135.7600,
+                address: "〒606-0823 京都府京都市左京区下鴨半木町"
+            },
+            {
+                title: "Kinetic Light Sculpture",
+                venue: "名古屋港水族館前広場",
+                city: "名古屋",
+                date: "2025年6月17日〜30日",
+                category: "プロジェクション",
+                price: "無料",
+                priceType: "無料",
+                description: "動的な光の彫刻作品による屋外展示。風力や太陽光を利用した自然エネルギー駆動の光のインスタレーション。",
+                features: ["動的彫刻", "自然エネルギー", "屋外展示"],
+                link: "#",
+                lat: 35.1000,
+                lng: 136.8800,
+                address: "〒455-0033 愛知県名古屋市港区港町1-3"
+            },
+            {
+                title: "Collaborative AI Art",
+                venue: "横浜みなとみらい21",
+                city: "横浜",
+                date: "2025年6月19日〜30日",
+                category: "AI アート",
+                price: "¥1,900",
+                priceType: "有料",
+                description: "人間とAIの協働による創作プロセスを公開。リアルタイムでAIと人間アーティストが共同制作する様子を観察できる実験的展示。",
+                features: ["人AI協働", "リアルタイム制作", "創作プロセス"],
+                link: "#",
+                lat: 35.4500,
+                lng: 139.6300,
+                address: "〒220-0012 神奈川県横浜市西区みなとみらい"
+            },
+            {
+                title: "Molecular Art Visualization",
+                venue: "福岡大学医学部",
+                city: "福岡",
+                date: "2025年6月21日〜28日",
+                category: "バイオアート",
+                price: "¥1,300",
+                priceType: "有料",
+                description: "分子レベルの生命現象をアートで可視化。DNA構造、タンパク質折り畳み、細胞分裂などのミクロ世界を美的に表現。",
+                features: ["分子可視化", "生命現象", "ミクロ美学"],
+                link: "#",
+                lat: 33.5800,
+                lng: 130.4200,
+                address: "〒814-0180 福岡県福岡市城南区七隈7-45-1"
+            },
+            {
+                title: "Gesture Recognition Art",
+                venue: "札幌駅前地下歩行空間",
+                city: "札幌",
+                date: "2025年6月23日〜30日",
+                category: "インタラクティブ",
+                price: "無料",
+                priceType: "無料",
+                description: "ジェスチャー認識技術を活用した公共空間でのアート体験。通行人の動きや仕草に反応して変化するインタラクティブな映像作品。",
+                features: ["ジェスチャー認識", "公共空間", "通行人参加"],
+                link: "#",
+                lat: 43.0600,
+                lng: 141.3500,
+                address: "〒060-0005 北海道札幌市中央区北5条西2丁目"
+            }
+        ];
+
+        let filteredEvents = [...events];
+
+        // DOM elements
+        const eventsGrid = document.getElementById('events-grid');
+        const noResults = document.getElementById('no-results');
+        const totalEventsElement = document.getElementById('total-events');
+        const cityFilter = document.getElementById('city-filter');
+        const categoryFilter = document.getElementById('category-filter');
+        const priceFilter = document.getElementById('price-filter');
+        const searchInput = document.getElementById('search');
+
+        // Render events
+        function renderEvents(eventsToRender) {
+            eventsGrid.innerHTML = '';
+            
+            if (eventsToRender.length === 0) {
+                eventsGrid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            eventsGrid.style.display = 'grid';
+            noResults.style.display = 'none';
+
+            eventsToRender.forEach((event, index) => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card fade-in-up';
+                eventCard.style.animationDelay = `${index * 0.1}s`;
+                
+                eventCard.innerHTML = `
+                    <div class="event-image">
+                        <div class="event-category">${event.category}</div>
+                    </div>
+                    <div class="event-content">
+                        <h3 class="event-title">${event.title}</h3>
+                        <div class="event-venue">📍 ${event.venue}</div>
+                        <div class="event-date">📅 ${event.date}</div>
+                        <p class="event-description">${event.description}</p>
+                        <div class="event-features">
+                            ${event.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
+                        </div>
+                        ${event.cafes ? `
+                            <div class="cafe-section">
+                                <h4 class="cafe-title">📍 周辺のおすすめカフェ</h4>
+                                <div class="cafe-list">
+                                    ${event.cafes.map(cafe => `
+                                        <div class="cafe-item">
+                                            <div class="cafe-info">
+                                                <span class="cafe-name">${cafe.name}</span>
+                                                <span class="cafe-walk-time">徒歩${cafe.walkTime}</span>
+                                            </div>
+                                            <p class="cafe-description">${cafe.description}</p>
+                                            <div class="cafe-meta">
+                                                <span class="cafe-hours">営業時間: ${cafe.hours}</span>
+                                                <button class="cafe-map-button" onclick="showCafeOnMap('${cafe.name}', ${cafe.lat}, ${cafe.lng}, '${cafe.description}', '${cafe.hours}')">地図で見る</button>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        <div class="event-footer">
+                            <div class="event-price">${event.price}</div>
+                            <a href="${event.link}" class="event-link">詳細を見る</a>
+                            <button class="map-button" onclick="openMap('${event.venue}', ${event.lat}, ${event.lng}, '${event.title}', '${event.address}')">🗺️ 地図</button>
+                        </div>
+                    </div>
+                `;
+                
+                eventsGrid.appendChild(eventCard);
+            });
+
+            totalEventsElement.textContent = eventsToRender.length;
+        }
+
+        // Filter events
+        function filterEvents() {
+            const cityValue = cityFilter.value;
+            const categoryValue = categoryFilter.value;
+            const priceValue = priceFilter.value;
+            const searchValue = searchInput.value.toLowerCase();
+
+            filteredEvents = events.filter(event => {
+                const matchesCity = !cityValue || event.city === cityValue;
+                const matchesCategory = !categoryValue || event.category === categoryValue;
+                const matchesPrice = !priceValue || event.priceType === priceValue;
+                const matchesSearch = !searchValue || 
+                    event.title.toLowerCase().includes(searchValue) ||
+                    event.description.toLowerCase().includes(searchValue) ||
+                    event.venue.toLowerCase().includes(searchValue);
+
+                return matchesCity && matchesCategory && matchesPrice && matchesSearch;
+            });
+
+            renderEvents(filteredEvents);
+        }
+
+        // Event listeners
+        cityFilter.addEventListener('change', filterEvents);
+        categoryFilter.addEventListener('change', filterEvents);
+        priceFilter.addEventListener('change', filterEvents);
+        searchInput.addEventListener('input', filterEvents);
+
+        // Initial render
+        renderEvents(events);
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe event cards for animation
+        function observeCards() {
+            document.querySelectorAll('.event-card').forEach(card => {
+                observer.observe(card);
+            });
+        }
+
+        // Re-observe cards when events are re-rendered
+        const originalRenderEvents = renderEvents;
+        renderEvents = function(eventsToRender) {
+            originalRenderEvents(eventsToRender);
+            setTimeout(observeCards, 100);
+        };
+
+        // Initial observation
+        observeCards();
+
+        // Map functionality
+        let map;
+        let currentMarker;
+
+        function openMap(venue, lat, lng, eventTitle, address) {
+            const modal = document.getElementById('mapModal');
+            const modalTitle = document.getElementById('mapModalTitle');
+            const venueTitle = document.getElementById('venueTitle');
+            const venueAddress = document.getElementById('venueAddress');
+            
+            modalTitle.textContent = `${eventTitle} - 会場マップ`;
+            venueTitle.textContent = venue;
+            venueAddress.textContent = address;
+            
+            modal.style.display = 'block';
+            
+            // Initialize map if not already done
+            if (!map) {
+                map = L.map('map').setView([lat, lng], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+            } else {
+                map.setView([lat, lng], 15);
+            }
+            
+            // Remove existing marker
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+            
+            // Add new marker
+            currentMarker = L.marker([lat, lng]).addTo(map)
+                .bindPopup(`<strong>${venue}</strong><br>${address}`)
+                .openPopup();
+            
+            // Resize map after modal is shown
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        }
+
+        function closeMap() {
+            document.getElementById('mapModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('mapModal');
+            if (event.target === modal) {
+                closeMap();
+            }
+        }
+
+        function showCafeOnMap(cafeName, lat, lng, description, hours) {
+            const modal = document.getElementById('mapModal');
+            const modalTitle = document.getElementById('mapModalTitle');
+            const venueTitle = document.getElementById('venueTitle');
+            const venueAddress = document.getElementById('venueAddress');
+            
+            modalTitle.textContent = `${cafeName} - カフェマップ`;
+            venueTitle.textContent = cafeName;
+            venueAddress.textContent = `${description} | 営業時間: ${hours}`;
+            
+            modal.style.display = 'block';
+            
+            // Initialize map if not already done
+            if (!map) {
+                map = L.map('map').setView([lat, lng], 16);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+            } else {
+                map.setView([lat, lng], 16);
+            }
+            
+            // Remove existing marker
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+            
+            // Add new marker with coffee icon
+            const coffeeIcon = L.divIcon({
+                html: '<div style="background: linear-gradient(135deg, #f59e0b, #d97706); width: 25px; height: 25px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">☕</div>',
+                iconSize: [25, 25],
+                className: 'custom-coffee-marker'
+            });
+            
+            currentMarker = L.marker([lat, lng], {icon: coffeeIcon}).addTo(map)
+                .bindPopup(`<strong>${cafeName}</strong><br>${description}<br><em>営業時間: ${hours}</em>`)
+                .openPopup();
+            
+            // Resize map after modal is shown
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        }
+    </script>
+</body>
+</html>
